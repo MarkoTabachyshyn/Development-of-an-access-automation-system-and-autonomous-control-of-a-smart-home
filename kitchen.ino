@@ -6,7 +6,7 @@
 
 // WiFi налаштування
 const char* ssid = "ASUS";
-const char* password = "Ebanina31";
+const char* password = "ASUS";
 
 // MQTT налаштування
 const char* mqtt_server = "raspberrypi.local";
