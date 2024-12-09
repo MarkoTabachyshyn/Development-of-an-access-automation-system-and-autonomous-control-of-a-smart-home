@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Control</title>
+</head>
+<body>
+    <h1>Smart Home Control</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+                {% for category, message in messages %}
+                    <li style="color: {{ 'green' if category == 'success' else 'red' }};">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <h2>Кімнати</h2>
+    <table border="1">
+        <tr>
+            <th>Кімната</th>
+            <th>Поточна температура</th>
+            <th>Світло</th>
+            <th>Бажана температура</th>
+            <th>Штори</th>
+            <th>Вентиляція</th>
+            <th>Пожежна небезпека</th>
+        </tr>
+        {% for room, data in rooms.items() %}
+        <tr>
+            <td>{{ room }}</td>
+            <td>{{ data.current_temperature }}</td>
+            <td>{{ data.light_state }}</td>
+            <td>{{ data.desired_temperature }}</td>
+            <td>{{ data.curtains_state if 'curtains_state' in data else 'N/A' }}</td>
+            <td>{{ data.fan_state if 'fan_state' in data else 'N/A' }}</td>
+            <td>{{ data.fire_detected if 'fire_detected' in data else 'N/A' }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Оновити бажану температуру</h2>
+    <form method="POST" action="/update-temperature">
+        <label for="room">Кімната:</label>
+        <select name="room" id="room">
+            {% for room in rooms.keys() %}
+            <option value="{{ room }}">{{ room }}</option>
+            {% endfor %}
+        </select><br>
+        <label for="temperature">Нова температура:</label>
+        <input type="text" name="temperature" id="temperature"><br>
+        <button type="submit">Оновити</button>
+    </form>
+
+    <h2>Пароль дверей</h2>
+    <p>Поточний пароль: {{ password['password'] }}</p>
+    <form method="POST" action="/update-password">
+        <label for="password">Новий пароль:</label>
+        <input type="text" name="password" id="password"><br>
+        <button type="submit">Оновити пароль</button>
+    </form>
+
+    <h2>Автомобілі</h2>
+    <table border="1">
+        <tr>
+            <th>Номер</th>
+            <th>Власник</th>
+            <th>Дата додавання</th>
+        </tr>
+        {% for vehicle in vehicles %}
+        <tr>
+            <td>{{ vehicle['plate_number'] }}</td>
+            <td>{{ vehicle['owner_name'] }}</td>
+            <td>{{ vehicle['timestamp'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Додати автомобіль</h2>
+    <form method="POST" action="/add-vehicle">
+        <label for="plate_number">Номер:</label>
+        <input type="text" name="plate_number" id="plate_number"><br>
+        <label for="owner_name">Власник:</label>
+        <input type="text" name="owner_name" id="owner_name"><br>
+        <button type="submit">Додати автомобіль</button>
+    </form>
+
+    <h2>Видалити автомобіль</h2>
+    <form method="POST" action="/delete-vehicle">
+        <label for="plate_number">Номер:</label>
+        <input type="text" name="plate_number" id="plate_number"><br>
+        <button type="submit">Видалити автомобіль</button>
+    </form>
+</body>
+</html>
